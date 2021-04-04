@@ -102,3 +102,25 @@ dist
 
 # TernJS port file
 .tern-port
+
+builds/
+dist/
+*.DS_Store
+
+# App packaged
+release
+src/main.prod.js
+src/main.prod.js.map
+src/renderer.prod.js
+src/renderer.prod.js.map
+src/style.css
+src/style.css.map
+dll
+main.js
+main.js.map
+
+.idea
+npm-debug.log.*
+*.css.d.ts
+*.sass.d.ts
+*.scss.d.ts
