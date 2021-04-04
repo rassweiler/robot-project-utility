@@ -1,0 +1,19 @@
+.sub-menu{
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	width: 100%;
+	background-color: #c24c48;
+	color: azure;
+	font-size: 1rem;
+}
+
+.sub-menu-item{
+	padding: 0.5rem;
+	cursor: pointer;
+}
+
+.sub-menu-item:hover, .sub-menu-item:focus, .sub-menu-item:active{
+	background-color: azure;
+	color: #c24c48;
+}
