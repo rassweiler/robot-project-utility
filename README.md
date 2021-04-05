@@ -38,9 +38,15 @@ yarn start
 yarn package
 ```
 
+## Parsers
+
+This project uses [kawasaki-as-parser][kap-url]
+
+
+[kap-url]:https://github.com/rassweiler/kawasaki-as-parser
 [github-actions-status]: https://github.com/rassweiler/robot-project-utility/workflows/Test/badge.svg
 [github-actions-url]: https://github.com/rassweiler/robot-project-utility/actions
-[github-tag-image]: https://img.shields.io/github/v/tag/rassweiler/robot-project-utility?label=version.svg
+[github-tag-image]: https://img.shields.io/github/v/tag/rassweiler/robot-project-utility?label=version
 [github-tag-url]: https://github.com/rassweiler/robot-project-utility/releases/latest
 [stackoverflow-img]: https://img.shields.io/badge/stackoverflow-robot__project__utility-blue.svg
 [stackoverflow-url]: https://stackoverflow.com/questions/tagged/robot-project-utility

@@ -1,45 +1,104 @@
 import React from 'react';
 import './style.global.css';
 
-export default function RobotMenu() {
+export default function RobotMenu(props: {
+	robotOpened: boolean;
+	toggleVSF: any;
+	toggleTool: any;
+	toggleMH: any;
+	toggleSpot: any;
+	toggleBCD: any;
+	toggleProg: any;
+	toggleVar: any;
+}) {
+	const {
+		robotOpened,
+		toggleVSF,
+		toggleTool,
+		toggleMH,
+		toggleSpot,
+		toggleBCD,
+		toggleProg,
+		toggleVar,
+	} = props;
+
+	const RobotButtons = (opened: boolean) => {
+		if (opened) {
+			return (
+				<>
+					<button
+						type="button"
+						className="sub-menu-item"
+						onClick={toggleVSF}
+					>
+						<i className="fa fa-cubes" />
+						VSF
+					</button>
+					<button
+						type="button"
+						className="sub-menu-item"
+						onClick={toggleTool}
+					>
+						<i className="fa fa-tools" />
+						Tool
+					</button>
+					<button
+						type="button"
+						className="sub-menu-item"
+						onClick={toggleMH}
+					>
+						<i className="fa fa-fist-raised" />
+						MH
+					</button>
+					<button
+						type="button"
+						className="sub-menu-item"
+						onClick={toggleSpot}
+					>
+						<i className="fa fa-plug" />
+						Spot
+					</button>
+					<button
+						type="button"
+						className="sub-menu-item"
+						onClick={toggleBCD}
+					>
+						<i className="fa fa-laptop" />
+						BCD
+					</button>
+					<button
+						type="button"
+						className="sub-menu-item"
+						onClick={toggleProg}
+					>
+						<i className="fa fa-stream" />
+						Programs
+					</button>
+					<button
+						type="button"
+						className="sub-menu-item"
+						onClick={toggleVar}
+					>
+						<i className="fa fa-laptop-code" />
+						Variables
+					</button>
+				</>
+			);
+		}
+		return <></>;
+	};
+
 	return (
 		<div className="sub-menu">
-			<span className="sub-menu-item">
+			<button type="button" className="sub-menu-item">
 				<i className="fa fa-folder-open" />
 				Open
-			</span>
-			<span className="sub-menu-item">
+			</button>
+			<button type="button" className="sub-menu-item">
 				<i className="fa fa-file-export" />
 				Export
-			</span>
-			<span className="sub-menu-item">
-				<i className="fa fa-cubes" />
-				VSF
-			</span>
-			<span className="sub-menu-item">
-				<i className="fa fa-tools" />
-				Tool
-			</span>
-			<span className="sub-menu-item">
-				<i className="fa fa-fist-raised" />
-				MH
-			</span>
-			<span className="sub-menu-item">
-				<i className="fa fa-plug" />
-				Spot
-			</span>
-			<span className="sub-menu-item">
-				<i className="fa fa-laptop" />
-				BCD
-			</span>
-			<span className="sub-menu-item">
-				<i className="fa fa-stream" />
-				Programs
-			</span>
-			<span className="sub-menu-item">
-				<i className="fa fa-laptop-code" />
-				Variables
-			</span>
+			</button>
+			{RobotButtons(robotOpened)}
 		</div>
 	);
 }
