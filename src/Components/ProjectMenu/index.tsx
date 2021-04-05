@@ -22,13 +22,17 @@ export default function ProjectMenu() {
 			</span>
 			<span className="sub-menu-item">
 				<i className="fa fa-calendar-day" />
-				<label htmlFor="startDate">Start</label>
-				<input type="date" name="startDate" id="startDate" />
+				<label htmlFor="startDate">
+					Start
+					<input type="date" name="startDate" id="startDate" />
+				</label>
 			</span>
 			<span className="sub-menu-item">
 				<i className="fa fa-calendar-day" />
-				<label htmlFor="endDate">End</label>
-				<input type="date" name="endDate" id="endDate" />
+				<label htmlFor="endDate">
+					End
+					<input type="date" name="endDate" id="endDate" />
+				</label>
 			</span>
 			<span className="sub-menu-item">
 				<i className="fa fa-sitemap" />
