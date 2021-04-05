@@ -5,10 +5,31 @@ body {
 	overflow-y: hidden;
 	padding: 0;
 	margin: 0;
-	background-color: #030710;
+	background-color: #202a31;
 	color: azure;
 }
 
 .container {
 	padding: 1rem;
+}
+
+.sub-menu{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	background-color: #c24c48;
+	color: azure;
+	font-size: 1rem;
+}
+
+.sub-menu-item{
+	padding: 0.5rem;
+	cursor: pointer;
+}
+
+.sub-menu-item:hover, .sub-menu-item:focus, .sub-menu-item:active{
+	background-color: azure;
+	color: #c24c48;
 }

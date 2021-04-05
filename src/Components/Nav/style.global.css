@@ -1,0 +1,35 @@
+nav{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 2rem;
+    background-color: #0b1739;
+    color: azure;
+	 font-size: 1.2rem;
+}
+.nav-header{
+    width:auto;
+    align-items: center;
+	 font-weight: bolder;
+}
+nav ul{
+    display: flex;
+    flex-direction: row;
+	 flex-wrap: wrap;
+    justify-content: flex-end;
+    width:100%;
+    list-style: none;
+	 margin:0;
+}
+
+nav a{
+    cursor: pointer;
+    text-decoration: none;
+    color: azure;
+	 padding: 0.5rem;
+}
+
+nav a:hover,nav a:focus, nav a:active, nav a.active{
+    background-color: azure;
+    color: #0b1739;
+}
