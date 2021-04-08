@@ -1,21 +1,14 @@
 import React from 'react';
 import './style.global.css';
+import { VSFObjectAlias } from '../../alias';
 
-export default function RobotVSF(props: {
-	vsf: {
-		link: [];
-		area: Record<string, unknown>;
-		sphere: [];
-		box: [];
-		soft: [];
-	};
-}) {
+export default function RobotVSF(props: { vsf: VSFObjectAlias }) {
 	const { vsf } = props;
 	return (
 		<>
 			<div className="container-robot-data">
 				<div className="container-sub-header">Link Data</div>
-				{vsf.link.map((l) => {
+				{vsf.linkData.map((l) => {
 					return (
 						<>
 							<span>{l.radius}</span>

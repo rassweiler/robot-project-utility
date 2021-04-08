@@ -1,27 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { ControllerObjectAlias } from '../../alias';
 import RobotMenu from '../../Components/RobotMenu';
 import RobotVSF from '../../Components/RobotVSF';
 
-const KawasakiParser = require('@rassweiler/kawasaki-as-parser');
+const { ipcRenderer } = require('electron');
 
 export default function Robot() {
-	const [robot, setRobot] = useState({
-		file: '',
-		info: {
-			robotModel: '',
-			robotController: '',
-			robotType: '',
-		},
-		vsf: {
-			link: [],
-			area: {},
-			sphere: [],
-			box: [],
-			soft: [],
-		},
+	const [robot, setRobot] = useState<ControllerObjectAlias>({
+		controllerType: '',
+		robots: [],
 	});
 
 	const [file, setFile] = useState('');
+	const [errors, setErrors] = useState<string[]>([]);
 	const [showVSF, setShowVSF] = useState(false);
 	const [showTool, setShowTool] = useState(false);
 	const [showMH, setShowMH] = useState(false);
@@ -30,13 +21,37 @@ export default function Robot() {
 	const [showProg, setShowProg] = useState(false);
 	const [showVar, setShowVar] = useState(false);
 
-	const parseBackup = async () => {
-		if (file !== '') {
-			const controller = await KawasakiParser.getControllerObject();
-			setRobot(controller);
+	ipcRenderer.on('on-parse-as-data', (event: any, arg: any) => {
+		const data = arg;
+		if (data !== undefined) {
+			setRobot(data);
+		} else {
+			setFile('');
 		}
-	};
+	});
+	ipcRenderer.on('on-fs-read-file', (event: any, arg: any) => {
+		const data = arg;
+		if (data === undefined) {
+			setFile('');
+		} else {
+			ipcRenderer.send('on-parse-as-data', data);
+		}
+	});
+	ipcRenderer.on('on-fs-dialog-open', (event: any, arg: any) => {
+		const data = arg;
+		if (data !== undefined) {
+			setFile(data);
+			ipcRenderer.send('on-fs-read-file', data);
+		}
+	});
+	ipcRenderer.on('on-error', (event: any, arg: string[]) => {
+		const data = arg;
+		setErrors(data);
+	});
 
+	const openDialog = () => {
+		ipcRenderer.send('on-fs-dialog-open');
+	};
 	const toggleVSF = () => {
 		setShowVSF(!showVSF);
 	};
@@ -59,14 +74,16 @@ export default function Robot() {
 		setShowVar(!showVar);
 	};
 
+	/*
 	useEffect(() => {
 		parseBackup();
 	});
-
+*/
 	return (
 		<>
 			<RobotMenu
-				robotOpened={robot.file !== ''}
+				robotOpened={file !== ''}
+				openDialog={openDialog}
 				toggleVSF={toggleVSF}
 				toggleTool={toggleTool}
 				toggleMH={toggleMH}
@@ -76,27 +93,55 @@ export default function Robot() {
 				toggleVar={toggleVar}
 			/>
 			<div className="container">
-				<div className="container-header">
-					<span className="header-text">
-						Robot:
-						{robot.info.robotModel !== ''
-							? ` ${robot.info.robotModel}`
-							: ''}
-					</span>
-					<span className="header-text">
-						Controller:
-						{robot.info.robotController !== ''
-							? ` ${robot.info.robotController}`
-							: ''}
-					</span>
-					<span className="header-text">
-						Type:
-						{robot.info.robotType !== ''
-							? ` ${robot.info.robotType}`
-							: ''}
-					</span>
-				</div>
-				{showVSF === true ? <RobotVSF vsf={robot.vsf} /> : null}
+				{errors.length > 0
+					? errors.map((error) => {
+							return (
+								<>
+									<div className="container-header">
+										<span className="header-text">
+											ERROR:
+											{error}
+										</span>
+									</div>
+								</>
+							);
+					  })
+					: null}
+				{robot.robots.length > 0 ? (
+					<>
+						<div className="container-header">
+							<span className="header-text">
+								File:
+								{file !== '' ? ` ${file}` : ''}
+							</span>
+						</div>
+						<div className="container-header">
+							<span className="header-text">
+								Controller:
+								{robot.controllerType !== ''
+									? ` ${robot.controllerType}`
+									: ''}
+							</span>
+							<span className="header-text">
+								Robot:
+								{robot.robots[0].robotModel !== ''
+									? ` ${robot.robots[0].robotModel}`
+									: ''}
+							</span>
+							<span className="header-text">
+								Type:
+								{robot.robots[0].robotType !== ''
+									? ` ${robot.robots[0].robotType}`
+									: ''}
+							</span>
+						</div>
+					</>
+				) : null}
+				{showVSF === true
+					? robot.robots.map((r) => {
+							return <RobotVSF key={r.robotType} vsf={r.vsf} />;
+					  })
+					: null}
 				{showTool === true ? (
 					<div className="container-robot-data">Tool</div>
 				) : null}

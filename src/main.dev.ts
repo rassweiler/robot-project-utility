@@ -11,9 +11,11 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
+import fs from 'fs';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import KawasakiParser from '@rassweiler/kawasaki-as-parser';
 import MenuBuilder from './menu';
 
 export default class AppUpdater {
@@ -129,4 +131,38 @@ app.on('activate', () => {
 	// On macOS it's common to re-create a window in the app when the
 	// dock icon is clicked and there are no other windows open.
 	if (mainWindow === null) createWindow();
+});
+
+// open filesystem dialog to choose files
+ipcMain.on('on-fs-dialog-open', (event) => {
+	const files = dialog.showOpenDialogSync({
+		properties: ['openFile', 'multiSelections'],
+	});
+	if (files === undefined) {
+		event.sender.send('on-fs-dialog-open', undefined);
+		event.sender.send('on-error', 'Error no file selected');
+	} else {
+		event.sender.send('on-fs-dialog-open', files[0]);
+	}
+});
+
+// read file from system
+ipcMain.on('on-fs-read-file', (event, file) => {
+	fs.readFile(file, 'utf-8', (error, data) => {
+		if (error) {
+			event.sender.send('on-fs-read-file', undefined);
+			event.sender.send('on-error', error);
+		}
+		event.sender.send('on-fs-read-file', data);
+	});
+});
+
+// parse as data
+ipcMain.on('on-parse-as-data', async (event, data) => {
+	try {
+		const controller = await KawasakiParser.getControllerObject(data);
+		event.sender.send('on-parse-as-data', controller);
+	} catch (error) {
+		event.sender.send('on-error', error.message);
+	}
 });

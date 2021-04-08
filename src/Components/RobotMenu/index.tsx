@@ -3,16 +3,18 @@ import './style.global.css';
 
 export default function RobotMenu(props: {
 	robotOpened: boolean;
-	toggleVSF: any;
-	toggleTool: any;
-	toggleMH: any;
-	toggleSpot: any;
-	toggleBCD: any;
-	toggleProg: any;
-	toggleVar: any;
+	openDialog: () => void;
+	toggleVSF: () => void;
+	toggleTool: () => void;
+	toggleMH: () => void;
+	toggleSpot: () => void;
+	toggleBCD: () => void;
+	toggleProg: () => void;
+	toggleVar: () => void;
 }) {
 	const {
 		robotOpened,
+		openDialog,
 		toggleVSF,
 		toggleTool,
 		toggleMH,
@@ -90,7 +92,7 @@ export default function RobotMenu(props: {
 
 	return (
 		<div className="sub-menu">
-			<button type="button" className="sub-menu-item">
+			<button type="button" className="sub-menu-item" onClick={openDialog}>
 				<i className="fa fa-folder-open" />
 				Open
 			</button>
