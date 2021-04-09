@@ -1,15 +1,26 @@
 export type ControllerObjectAlias = {
 	controllerType: string;
+	manufacturer: 'Kawasaki';
 	robots: RobotObjectAlias[];
 };
 
 export type RobotObjectAlias = {
-	robotType: string;
+	robotType:
+		| 'MH'
+		| 'Spot'
+		| 'NC'
+		| 'Spot-MH'
+		| 'Vision'
+		| 'Mig'
+		| 'Hem'
+		| 'Locator';
 	robotModel: string;
 	tools: ToolObjectAlias[];
 	installPosition: InstallPositionAlias;
-	softLimits: SoftLimitObjectAlias[];
 	vsf: VSFObjectAlias;
+	spot: SpotObjectAlias[];
+	rac: RacObjectAlias[];
+	mh: MHObjectAlias[];
 	programs: ProgramObjectAlias[];
 };
 
@@ -104,6 +115,7 @@ export type VSFObjectAlias = {
 			];
 		}
 	];
+	softLimits: SoftLimitObjectAlias[];
 };
 
 export type LineObjectAlias = {
@@ -111,6 +123,78 @@ export type LineObjectAlias = {
 	y1: number;
 	x2: number;
 	y2: number;
+};
+
+export type SpotObjectAlias = {
+	dresserUse: boolean;
+	leakCheck: boolean;
+	reweld: boolean;
+	welderType: 'Constant Current' | 'Adaptive' | undefined;
+	gunType: 'Pincher';
+	squeeze: number;
+	gunArea: number;
+	maxPressure: number;
+	turnsRatio: number;
+	tipMovableClearance: number;
+	tipFixedClearance: number;
+	tipMovableWearLimit: number;
+	tipFixedwearLimit: number;
+	linearUp: {
+		enabled: boolean;
+		values: StepupObjectAlias[];
+	};
+	formerLinearUp: {
+		enabled: boolean;
+		values: StepupObjectAlias[];
+	};
+};
+
+type StepupObjectAlias = {
+	onePercentSetting: number;
+	onePercentValue: number;
+	twoPercentSetting: number;
+	twoPercentValue: number;
+};
+
+export type MHObjectAlias = {
+	tableIndex: number;
+	axis8: number;
+	axis9: number;
+	axis10: number;
+	axis11: number;
+	axis12: number;
+	axis13: number;
+	comment: string;
+};
+
+export type RacObjectAlias = {
+	materials: [
+		{
+			materialIndex: number;
+			used: boolean;
+			thickness: number;
+		}
+	];
+	force1: number;
+	force2: number;
+	squeezeTime: number;
+	interval: number;
+	holdTime: number;
+	preHeat: number;
+	current: [
+		{
+			currentIndex: number;
+			value: number;
+		}
+	];
+	weldTime: [
+		{
+			weldIndex: number;
+			upslope: number;
+			energized: number;
+			downslope: number;
+		}
+	];
 };
 
 export type ProgramObjectAlias = {

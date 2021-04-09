@@ -8,6 +8,7 @@ const { ipcRenderer } = require('electron');
 export default function Robot() {
 	const [robot, setRobot] = useState<ControllerObjectAlias>({
 		controllerType: '',
+		manufacturer: 'Kawasaki',
 		robots: [],
 	});
 
@@ -44,9 +45,9 @@ export default function Robot() {
 			ipcRenderer.send('on-fs-read-file', data);
 		}
 	});
-	ipcRenderer.on('on-error', (event: any, arg: string[]) => {
+	ipcRenderer.on('on-error', (event: any, arg: string) => {
 		const data = arg;
-		setErrors(data);
+		setErrors([...errors, data]);
 	});
 
 	const openDialog = () => {
@@ -96,14 +97,12 @@ export default function Robot() {
 				{errors.length > 0
 					? errors.map((error) => {
 							return (
-								<>
-									<div className="container-header">
-										<span className="header-text">
-											ERROR:
-											{error}
-										</span>
-									</div>
-								</>
+								<div key={error} className="container-header">
+									<span className="header-text">
+										ERROR:
+										{error}
+									</span>
+								</div>
 							);
 					  })
 					: null}
@@ -130,9 +129,7 @@ export default function Robot() {
 							</span>
 							<span className="header-text">
 								Type:
-								{robot.robots[0].robotType !== ''
-									? ` ${robot.robots[0].robotType}`
-									: ''}
+								{robot.robots[0].robotType}
 							</span>
 						</div>
 					</>
