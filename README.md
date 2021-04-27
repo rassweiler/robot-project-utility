@@ -7,6 +7,7 @@ Utility to manage robotics work and data.
 [![Build Status][github-actions-status]][github-actions-url]
 [![Github Tag][github-tag-image]][github-tag-url]
 [![StackOverflow][stackoverflow-img]][stackoverflow-url]
+[![Liscense][liscense-tag]][liscense-url]
 
 </div>
 
@@ -50,3 +51,5 @@ This project uses [kawasaki-as-parser][kap-url]
 [github-tag-url]: https://github.com/rassweiler/robot-project-utility/releases/latest
 [stackoverflow-img]: https://img.shields.io/badge/stackoverflow-robot__project__utility-blue.svg
 [stackoverflow-url]: https://stackoverflow.com/questions/tagged/robot-project-utility
+[liscense-url]: https://github.com/rassweiler/robot-project-utility/blob/master/LICENSE
+[liscense-tag]: https://img.shields.io/badge/license-GPL3-blue.svg

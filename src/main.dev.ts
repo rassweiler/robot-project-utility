@@ -16,6 +16,7 @@ import fs from 'fs';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import KawasakiParser from '@rassweiler/kawasaki-as-parser';
+import { ControllerObjectAlias } from '@rassweiler/kawasaki-as-parser/lib/interfaces';
 import MenuBuilder from './menu';
 
 export default class AppUpdater {
@@ -133,36 +134,117 @@ app.on('activate', () => {
 	if (mainWindow === null) createWindow();
 });
 
-// open filesystem dialog to choose files
-ipcMain.on('on-fs-dialog-open', (event) => {
+// open backup
+ipcMain.on('on-open-backup', async (event) => {
+	let controller: ControllerObjectAlias = {
+		controllerType: '',
+		manufacturer: 'Kawasaki',
+		robots: [],
+		ioComments: {
+			inputs: [],
+			outputs: [],
+		},
+		commonPrograms: [],
+		stringVars: [],
+		realVars: [],
+		jointVars: [],
+		transVars: [],
+	};
+	let errors: string[] = [];
+	let fileName = '';
 	const files = dialog.showOpenDialogSync({
-		properties: ['openFile', 'multiSelections'],
+		filters: [{ name: 'Kawasaki', extensions: ['as', 'pg', 'vsf'] }],
+		properties: ['openFile', 'showHiddenFiles'],
 	});
 	if (files === undefined) {
-		event.sender.send('on-fs-dialog-open', undefined);
-		event.sender.send('on-error', 'Error no file selected');
-	} else {
-		event.sender.send('on-fs-dialog-open', files[0]);
-	}
-});
-
-// read file from system
-ipcMain.on('on-fs-read-file', (event, file) => {
-	fs.readFile(file, 'utf-8', (error, data) => {
-		if (error) {
-			event.sender.send('on-fs-read-file', undefined);
-			event.sender.send('on-error', error);
+		errors.push('Error: No file selected');
+	} else if (files.length > 0 && files[0] !== '') {
+		try {
+			[fileName] = files;
+			const file = await fs.promises.readFile(files[0], 'utf-8');
+			const data = await KawasakiParser.getControllerObject(file);
+			controller = data.data;
+			if (data.errors.length > 0) {
+				errors = errors.concat(data.errors);
+			}
+		} catch (error) {
+			errors.push(`Error: ${error}`);
 		}
-		event.sender.send('on-fs-read-file', data);
-	});
+	} else {
+		errors.push('Error: No file paths');
+	}
+	event.sender.send('on-open-backup', { data: controller, fileName, errors });
 });
 
-// parse as data
-ipcMain.on('on-parse-as-data', async (event, data) => {
-	try {
-		const controller = await KawasakiParser.getControllerObject(data);
-		event.sender.send('on-parse-as-data', controller);
-	} catch (error) {
-		event.sender.send('on-error', error.message);
+// open backup
+ipcMain.on(
+	'open-drag-backup',
+	async (event, file: { name: string; path: string }) => {
+		let controller: ControllerObjectAlias = {
+			controllerType: '',
+			manufacturer: 'Kawasaki',
+			robots: [],
+			ioComments: {
+				inputs: [],
+				outputs: [],
+			},
+			commonPrograms: [],
+			stringVars: [],
+			realVars: [],
+			jointVars: [],
+			transVars: [],
+		};
+		let errors: string[] = [];
+		if (file.name !== '' && file.path.endsWith('.as')) {
+			try {
+				const f = await fs.promises.readFile(file.path, 'utf-8');
+				const data = await KawasakiParser.getControllerObject(f);
+				controller = data.data;
+				if (data.errors.length > 0) {
+					errors = errors.concat(data.errors);
+				}
+			} catch (error) {
+				errors.push(`Error: ${error}`);
+			}
+		} else {
+			errors.push('Error: No file paths');
+		}
+		event.sender.send('on-open-backup', {
+			data: controller,
+			fileName: file.name,
+			errors,
+		});
+	}
+);
+
+const pdfOptions = {
+	marginsType: 0,
+	pageSize: 'A4',
+	printBackground: true,
+	printSelectionOnly: false,
+	landscape: false,
+};
+
+// Export PDF
+ipcMain.on('export-robot-backup', async (event, fileName = '') => {
+	const errors: string[] = [];
+	const folder = dialog.showOpenDialogSync({
+		properties: ['openDirectory'],
+	});
+	if (
+		folder !== undefined &&
+		folder.length > 0 &&
+		folder[0] !== '' &&
+		fileName !== '' &&
+		mainWindow !== null
+	) {
+		const filePath = path.join(folder[0], fileName);
+		try {
+			const rawPDF = await mainWindow.webContents.printToPDF(pdfOptions);
+			const file = await fs.promises.writeFile(filePath, rawPDF);
+			console.log(file);
+		} catch (error) {
+			errors.push(error);
+		}
 	}
 });
