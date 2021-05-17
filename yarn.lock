@@ -1395,10 +1395,10 @@
     schema-utils "^2.6.5"
     source-map "^0.7.3"
 
-"@rassweiler/kawasaki-as-parser@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@rassweiler/kawasaki-as-parser/-/kawasaki-as-parser-2.0.0.tgz#5953e2b29aab06d43fba9568fad1c0c08e61dbf7"
-  integrity sha512-m3Ir8aXNmHtl+3CIDefSwgNDpCvgRr+VhkjCDRIN4JeXudv356BSho4M33fi1WJiUWq2h8HZCPuRHQ/fI0ccbA==
+"@rassweiler/kawasaki-as-parser@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@rassweiler/kawasaki-as-parser/-/kawasaki-as-parser-3.0.0.tgz#9fc82efb9eb88e281a0de396b6bfec972cf20679"
+  integrity sha512-PU5HdVPmviHV0hNhXprQjhsvejJ0EOSOHzlXgwEF/Bx+0X510M2cWwimziX5+ZAYvCOEfukk6ZvsYn1qrSizbA==
 
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"

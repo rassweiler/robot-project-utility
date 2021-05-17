@@ -1,11 +1,13 @@
 import React from 'react';
 import { ProgramObjectAlias } from '@rassweiler/kawasaki-as-parser/lib/interfaces';
+import WeldDisplay from '../WeldDisplay';
 
 export default function RobotPrograms(props: {
 	robot: number;
 	programs: ProgramObjectAlias[];
 }) {
 	const { robot, programs } = props;
+
 	return (
 		<>
 			{programs.map((input, index) => {
@@ -100,9 +102,6 @@ export default function RobotPrograms(props: {
 											<span className="container-col-pg">
 												Grp {val.group}
 											</span>
-											<span className="container-col-pg">
-												Clmp {val.clamp}
-											</span>
 											{val.operation ? (
 												<span className="container-col-pg">
 													{val.operation}
@@ -110,12 +109,17 @@ export default function RobotPrograms(props: {
 											) : null}
 											{val.outputs !== '' ? (
 												<span className="container-col-pg">
-													{val.outputs}
+													O: {val.outputs}
 												</span>
 											) : null}
 											{val.inputs !== '' ? (
 												<span className="container-col-pg">
-													{val.inputs}
+													I: {val.inputs}
+												</span>
+											) : null}
+											{val.clampInstruction.clampNumber ? (
+												<span className="container-col-pg">
+													Clmp {val.clampInstruction.clampNumber}
 												</span>
 											) : null}
 											{val.comment ? (
@@ -138,11 +142,10 @@ export default function RobotPrograms(props: {
 												);
 											})}
 										</div>
-										<div // eslint-disable-next-line react/no-array-index-key
-											className="container-row welds"
-										>
-											.
-										</div>
+										<WeldDisplay
+											clamp={val.clampInstruction}
+											weld={val.weld}
+										/>
 									</div>
 								);
 							}

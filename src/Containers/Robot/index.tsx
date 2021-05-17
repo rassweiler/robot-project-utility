@@ -9,6 +9,8 @@ import RobotVSF from '../../Components/RobotVSF';
 import ControllerVariables from '../../Components/ControllerVariables';
 import ControllerPrograms from '../../Components/ControllerPrograms';
 import RobotPrograms from '../../Components/RobotPrograms';
+import RobotSwitch from '../../Components/RobotSwitch';
+import RobotGun from '../../Components/RobotGun';
 
 const { ipcRenderer } = require('electron');
 
@@ -29,19 +31,9 @@ export default function Robot() {
 	});
 
 	const [file, setFile] = useState('');
+	const [currentPage, setCurrentPage] = useState('');
 	const [errors, setErrors] = useState<string[]>([]);
 	const [showRobot, setShowRobot] = useState(0);
-	const [showErrors, setShowErrors] = useState(false);
-	const [showInfo, setShowInfo] = useState(false);
-	const [showVSF, setShowVSF] = useState(false);
-	const [showTool, setShowTool] = useState(false);
-	const [showMH, setShowMH] = useState(false);
-	const [showSpot, setShowSpot] = useState(false);
-	const [showBCD, setShowBCD] = useState(false);
-	const [showComments, setShowComments] = useState(false);
-	const [showRProg, setShowRProg] = useState(false);
-	const [showCProg, setShowCProg] = useState(false);
-	const [showVar, setShowVar] = useState(false);
 
 	ipcRenderer.on(
 		'on-open-backup',
@@ -54,9 +46,12 @@ export default function Robot() {
 			}
 		) => {
 			const { data, fileName } = arg;
-			setController(data);
-			setFile(fileName);
-			setErrors([...errors, ...arg.errors]);
+			if (fileName !== '' && fileName !== undefined) {
+				setController(data);
+				setFile(fileName);
+				setErrors([...errors, ...arg.errors]);
+				setCurrentPage('vsf');
+			}
 		}
 	);
 
@@ -85,68 +80,85 @@ export default function Robot() {
 		return undefined;
 	};
 	const toggleErrors = () => {
-		setShowErrors(!showErrors);
-	};
-	const toggleInfo = () => {
-		setShowInfo(!showInfo);
+		setCurrentPage('errors');
 	};
 	const toggleVSF = () => {
-		setShowVSF(!showVSF);
+		setCurrentPage('vsf');
 	};
 	const toggleTool = () => {
-		setShowTool(!showTool);
+		setCurrentPage('tool');
 	};
 	const toggleMH = () => {
-		setShowMH(!showMH);
+		setCurrentPage('mh');
 	};
 	const toggleSpot = () => {
-		setShowSpot(!showSpot);
+		setCurrentPage('spot');
 	};
 	const toggleBCD = () => {
-		setShowBCD(!showBCD);
+		setCurrentPage('bcd');
 	};
 	const toggleComments = () => {
-		setShowComments(!showComments);
+		setCurrentPage('comment');
 	};
 	const toggleRProg = () => {
-		setShowRProg(!showRProg);
+		setCurrentPage('rprog');
 	};
 	const toggleCProg = () => {
-		setShowCProg(!showCProg);
+		setCurrentPage('cprog');
 	};
 	const toggleVar = () => {
-		setShowVar(!showVar);
+		setCurrentPage('var');
+	};
+	const toggleSwitch = () => {
+		setCurrentPage('switch');
 	};
 
 	function RobotInfo() {
-		return (
-			<>
-				<div className="container-header">
-					<span className="header-text">
-						File:
-						{file !== '' ? ` ${file}` : ''}
-					</span>
-				</div>
-				<div className="container-header">
-					<span className="header-text">
-						Controller:
-						{controller.controllerType !== ''
-							? ` ${controller.controllerType}`
-							: ''}
-					</span>
-					<span className="header-text">
-						Robot:
-						{controller.robots[showRobot].robotModel !== ''
-							? ` ${controller.robots[showRobot].robotModel}`
-							: ''}
-					</span>
-					<span className="header-text">
-						Type:
-						{controller.robots[showRobot].robotType}
-					</span>
-				</div>
-			</>
-		);
+		if (file && controller.robots.length > 0) {
+			return (
+				<>
+					<div className="container-header">
+						<span className="header-text">
+							File:
+							{file !== '' ? ` ${file}` : ''}
+						</span>
+					</div>
+					<div className="container-header">
+						<span className="header-text">
+							Controller:
+							{controller.controllerType !== ''
+								? ` ${controller.controllerType}`
+								: ''}
+						</span>
+						<span className="header-text">
+							Robot:
+							{controller.robots[showRobot].model !== ''
+								? ` ${controller.robots[showRobot].model}`
+								: ''}
+						</span>
+						<span className="header-text">
+							Type:
+							{controller.robots[showRobot].type}
+						</span>
+					</div>
+					<div className="container-header">
+						<span className="header-text">
+							Program:
+							{controller.robots[showRobot].currentPosition.program}
+						</span>
+						<span className="header-text">
+							Step:
+							{controller.robots[showRobot].currentPosition.step}
+						</span>
+						<span className="header-text">
+							Joints:
+							{controller.robots[showRobot].currentPosition.joints}
+						</span>
+					</div>
+				</>
+			);
+		}
+		return <></>;
 	}
 
 	function RobotErrors() {
@@ -176,11 +188,11 @@ export default function Robot() {
 				robotOpened={file !== ''}
 				numberOfRobots={controller.robots.length}
 				currentRobot={showRobot}
+				currentPage={currentPage}
 				toggleRobot={toggleRobot}
 				openDialog={openDialog}
 				exportDialog={exportDialog}
 				toggleErrors={toggleErrors}
-				toggleInfo={toggleInfo}
 				toggleVSF={toggleVSF}
 				toggleTool={toggleTool}
 				toggleMH={toggleMH}
@@ -190,43 +202,47 @@ export default function Robot() {
 				toggleRProg={toggleRProg}
 				toggleCProg={toggleCProg}
 				toggleVar={toggleVar}
+				toggleSwitch={toggleSwitch}
 			/>
 			<div className="container" onDrop={onDrop} onDragOver={onDragOver}>
-				{showInfo === true ? <RobotInfo /> : null}
-				{showErrors === true ? <RobotErrors /> : null}
-				{showVSF === true ? (
+				<RobotInfo />
+				{currentPage === 'errors' ? <RobotErrors /> : null}
+				{currentPage === 'vsf' ? (
 					<RobotVSF
-						key={`Robot${showRobot}-VSF-${controller.robots[showRobot].robotType}`}
+						key={`Robot${showRobot}-VSF-${controller.robots[showRobot].type}`}
 						robot={showRobot + 1}
 						vsf={controller.robots[showRobot].vsf}
 						install={controller.robots[showRobot].installPosition}
 					/>
 				) : null}
 				<div className="page-break" />
-				{showTool === true ? (
+				{currentPage === 'tool' ? (
 					<RobotTool
-						key={`Robot${showRobot}-Tools-${controller.robots[showRobot].robotType}`}
+						key={`Robot${showRobot}-Tools-${controller.robots[showRobot].type}`}
 						robot={showRobot + 1}
 						tools={controller.robots[showRobot].tools}
 					/>
 				) : null}
-				{showMH === true ? (
+				{currentPage === 'mh' ? (
 					<RobotMH
-						key={`Robot${showRobot}-NCS-${controller.robots[showRobot].robotType}`}
+						key={`Robot${showRobot}-NCS-${controller.robots[showRobot].type}`}
 						robot={showRobot + 1}
 						ncs={controller.robots[showRobot].ncTable}
 					/>
 				) : null}
-				{showSpot === true ? (
-					<div className="sub-container">Spot</div>
+				{currentPage === 'spot' ? (
+					<RobotGun
+						robot={showRobot}
+						guns={controller.robots[showRobot].spotGuns}
+					/>
 				) : null}
-				{showBCD === true ? (
+				{currentPage === 'bcd' ? (
 					<RobotBCD bcds={controller.robots[showRobot].bcds} />
 				) : null}
-				{showComments === true ? (
+				{currentPage === 'comment' ? (
 					<ControllerComments comments={controller.ioComments} />
 				) : null}
-				{showRProg === true ? (
+				{currentPage === 'rprog' ? (
 					<>
 						<RobotPrograms
 							robot={showRobot}
@@ -234,17 +250,23 @@ export default function Robot() {
 						/>
 					</>
 				) : null}
-				{showCProg === true ? (
+				{currentPage === 'cprog' ? (
 					<>
 						<ControllerPrograms programs={controller.commonPrograms} />
 					</>
 				) : null}
-				{showVar === true ? (
+				{currentPage === 'var' ? (
 					<ControllerVariables
 						strings={controller.stringVars}
 						reals={controller.realVars}
 						joints={controller.jointVars}
 						trans={controller.transVars}
+					/>
+				) : null}
+				{currentPage === 'switch' ? (
+					<RobotSwitch
+						robot={showRobot}
+						switches={controller.robots[showRobot].switches}
 					/>
 				) : null}
 			</div>

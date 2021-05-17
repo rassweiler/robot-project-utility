@@ -4,13 +4,13 @@ export default function RobotMenu(props: {
 	robotOpened: boolean;
 	numberOfRobots: number;
 	currentRobot: number;
+	currentPage: string;
 	toggleRobot: (
 		robot: number
 	) => MouseEventHandler<HTMLButtonElement> | undefined;
 	openDialog: () => void;
 	exportDialog: () => void;
 	toggleErrors: () => void;
-	toggleInfo: () => void;
 	toggleVSF: () => void;
 	toggleTool: () => void;
 	toggleMH: () => void;
@@ -20,16 +20,17 @@ export default function RobotMenu(props: {
 	toggleRProg: () => void;
 	toggleCProg: () => void;
 	toggleVar: () => void;
+	toggleSwitch: () => void;
 }) {
 	const {
 		robotOpened,
 		numberOfRobots,
 		currentRobot,
+		currentPage,
 		toggleRobot,
 		openDialog,
 		exportDialog,
 		toggleErrors,
-		toggleInfo,
 		toggleVSF,
 		toggleTool,
 		toggleMH,
@@ -39,6 +40,7 @@ export default function RobotMenu(props: {
 		toggleRProg,
 		toggleCProg,
 		toggleVar,
+		toggleSwitch,
 	} = props;
 
 	const MenuButtons = () => {
@@ -55,7 +57,11 @@ export default function RobotMenu(props: {
 					</button>
 					<button
 						type="button"
-						className="sub-menu-item"
+						className={
+							currentPage === 'errors'
+								? 'sub-menu-item active'
+								: 'sub-menu-item'
+						}
 						onClick={toggleErrors}
 					>
 						<i className="fa fa-exclamation-circle" />
@@ -63,15 +69,11 @@ export default function RobotMenu(props: {
 					</button>
 					<button
 						type="button"
-						className="sub-menu-item"
-						onClick={toggleInfo}
-					>
-						<i className="fa fa-info-circle" />
-						Info
-					</button>
-					<button
-						type="button"
-						className="sub-menu-item"
+						className={
+							currentPage === 'vsf'
+								? 'sub-menu-item active'
+								: 'sub-menu-item'
+						}
 						onClick={toggleVSF}
 					>
 						<i className="fa fa-cubes" />
@@ -79,7 +81,11 @@ export default function RobotMenu(props: {
 					</button>
 					<button
 						type="button"
-						className="sub-menu-item"
+						className={
+							currentPage === 'tool'
+								? 'sub-menu-item active'
+								: 'sub-menu-item'
+						}
 						onClick={toggleTool}
 					>
 						<i className="fa fa-tools" />
@@ -87,7 +93,11 @@ export default function RobotMenu(props: {
 					</button>
 					<button
 						type="button"
-						className="sub-menu-item"
+						className={
+							currentPage === 'mh'
+								? 'sub-menu-item active'
+								: 'sub-menu-item'
+						}
 						onClick={toggleMH}
 					>
 						<i className="fa fa-fist-raised" />
@@ -95,15 +105,23 @@ export default function RobotMenu(props: {
 					</button>
 					<button
 						type="button"
-						className="sub-menu-item"
+						className={
+							currentPage === 'spot'
+								? 'sub-menu-item active'
+								: 'sub-menu-item'
+						}
 						onClick={toggleSpot}
 					>
 						<i className="fa fa-plug" />
-						Spot
+						Gun
 					</button>
 					<button
 						type="button"
-						className="sub-menu-item"
+						className={
+							currentPage === 'bcd'
+								? 'sub-menu-item active'
+								: 'sub-menu-item'
+						}
 						onClick={toggleBCD}
 					>
 						<i className="fa fa-laptop" />
@@ -111,7 +129,11 @@ export default function RobotMenu(props: {
 					</button>
 					<button
 						type="button"
-						className="sub-menu-item"
+						className={
+							currentPage === 'comment'
+								? 'sub-menu-item active'
+								: 'sub-menu-item'
+						}
 						onClick={toggleComments}
 					>
 						<i className="fa fa-quote-left" />
@@ -119,7 +141,11 @@ export default function RobotMenu(props: {
 					</button>
 					<button
 						type="button"
-						className="sub-menu-item"
+						className={
+							currentPage === 'rprog'
+								? 'sub-menu-item active'
+								: 'sub-menu-item'
+						}
 						onClick={toggleRProg}
 					>
 						<i className="fa fa-stream" />
@@ -127,7 +153,11 @@ export default function RobotMenu(props: {
 					</button>
 					<button
 						type="button"
-						className="sub-menu-item"
+						className={
+							currentPage === 'cprog'
+								? 'sub-menu-item active'
+								: 'sub-menu-item'
+						}
 						onClick={toggleCProg}
 					>
 						<i className="fa fa-stream" />
@@ -135,11 +165,27 @@ export default function RobotMenu(props: {
 					</button>
 					<button
 						type="button"
-						className="sub-menu-item"
+						className={
+							currentPage === 'var'
+								? 'sub-menu-item active'
+								: 'sub-menu-item'
+						}
 						onClick={toggleVar}
 					>
 						<i className="fa fa-laptop-code" />
 						Variables
+					</button>
+					<button
+						type="button"
+						className={
+							currentPage === 'switch'
+								? 'sub-menu-item active'
+								: 'sub-menu-item'
+						}
+						onClick={toggleSwitch}
+					>
+						<i className="fa fa-toggle-on" />
+						Switches
 					</button>
 				</>
 			);

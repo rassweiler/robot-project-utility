@@ -15,8 +15,8 @@ import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import fs from 'fs';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import KawasakiParser from '@rassweiler/kawasaki-as-parser';
-import { ControllerObjectAlias } from '@rassweiler/kawasaki-as-parser/lib/interfaces';
+import KawasakiParser from '../../kawasaki-as-parser';
+import { ControllerObjectAlias } from '../../kawasaki-as-parser/lib/interfaces';
 import MenuBuilder from './menu';
 
 export default class AppUpdater {
@@ -156,6 +156,7 @@ ipcMain.on('on-open-backup', async (event) => {
 		filters: [{ name: 'Kawasaki', extensions: ['as', 'pg', 'vsf'] }],
 		properties: ['openFile', 'showHiddenFiles'],
 	});
+	console.log(files);
 	if (files === undefined) {
 		errors.push('Error: No file selected');
 	} else if (files.length > 0 && files[0] !== '') {

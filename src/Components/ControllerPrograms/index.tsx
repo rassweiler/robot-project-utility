@@ -1,10 +1,12 @@
 import React from 'react';
 import { ProgramObjectAlias } from '@rassweiler/kawasaki-as-parser/lib/interfaces';
+import WeldDisplay from '../WeldDisplay';
 
 export default function ControllerPrograms(props: {
 	programs: ProgramObjectAlias[];
 }) {
 	const { programs } = props;
+
 	return (
 		<>
 			<div className="sub-container">
@@ -27,7 +29,7 @@ export default function ControllerPrograms(props: {
 							<span className="container-col">{input.arguments}</span>
 						</div>
 						{input.lines.map((val, i) => {
-							if (val.type === 'comment' || val.type === 'as') {
+							if (val.type === 'as') {
 								return (
 									<div // eslint-disable-next-line react/no-array-index-key
 										key={`controller-program-${index}-line-${i}-line`}
@@ -43,6 +45,18 @@ export default function ControllerPrograms(props: {
 												&ldquo;{val.comment}&ldquo;
 											</span>
 										) : null}
+									</div>
+								);
+							}
+							if (val.type === 'comment') {
+								return (
+									<div // eslint-disable-next-line react/no-array-index-key
+										key={`controller-program-${index}-line-${i}-line`}
+										className="container-row"
+									>
+										<span className="container-col-pg string">
+											&ldquo;{val.comment}&ldquo;
+										</span>
 									</div>
 								);
 							}
@@ -94,9 +108,11 @@ export default function ControllerPrograms(props: {
 										<span className="container-col-pg">
 											Group {val.group}
 										</span>
-										<span className="container-col-pg">
-											Clamp {val.clamp}
-										</span>
+										{val.clampInstruction.clampNumber ? (
+											<span className="container-col-pg">
+												Clmp {val.clampInstruction.clampNumber}
+											</span>
+										) : null}
 										{val.operation ? (
 											<span className="container-col-pg">
 												{val.operation}
@@ -107,6 +123,10 @@ export default function ControllerPrograms(props: {
 												&ldquo;{val.comment}&ldquo;
 											</span>
 										) : null}
+										<WeldDisplay
+											clamp={val.clampInstruction}
+											weld={val.weld}
+										/>
 									</div>
 								);
 							}
