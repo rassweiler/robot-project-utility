@@ -15,8 +15,8 @@ import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import fs from 'fs';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import KawasakiParser from '../../kawasaki-as-parser';
-import { ControllerObjectAlias } from '../../kawasaki-as-parser/lib/interfaces';
+import KawasakiParser from '@rassweiler/kawasaki-as-parser';
+import { ControllerObjectAlias } from '@rassweiler/kawasaki-as-parser/lib/interfaces';
 import MenuBuilder from './menu';
 
 export default class AppUpdater {
